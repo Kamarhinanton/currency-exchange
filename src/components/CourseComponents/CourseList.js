@@ -5,11 +5,18 @@ import {useState} from "react";
 const CourseList = (props)=> {
     let [valueFirst, setValueFirst] = useState('');
     let [valueLast, setValueLast] = useState('');
+    let [editMode, setEditMode] = useState(false);
 
     let firstSelectValue = React.createRef();
     let lastSelectValue = React.createRef();
 
-    const reverseLogic = false;
+    let normLogic = () => {
+        return setEditMode(false);
+    }
+
+    let reverseLogic = () => {
+       return setEditMode(true);
+    }
 
     const changeInputFirst = (e) => {
         let changingValue = e.currentTarget.value * (lastSelectValue.current.value / firstSelectValue.current.value );
@@ -24,19 +31,31 @@ const CourseList = (props)=> {
     }
 
     const changeSelectFirst = (e) => {
-        let changingValue = valueFirst * (e.currentTarget.value / lastSelectValue.current.value);
-        setValueLast(valueLast = changingValue)
+        if(editMode===false){
+            let changingValue = valueFirst * (e.currentTarget.value / lastSelectValue.current.value);
+            setValueLast(valueLast = changingValue.toFixed(2))
+        }
+        else{
+            let changingValue = valueLast * (lastSelectValue.current.value / e.currentTarget.value );
+            setValueFirst(valueFirst = changingValue.toFixed(2))
+        }
     }
 
     const changeSelectLast = (e) => {
-        let changingValue = valueLast * (e.currentTarget.value / firstSelectValue.current.value);
-        setValueFirst(valueLast = changingValue)
+        if(editMode===true){
+            let changingValue = valueLast * (e.currentTarget.value / firstSelectValue.current.value);
+            setValueFirst(valueLast = changingValue.toFixed(2))
+        }
+        else{
+            let changingValue = valueFirst * (firstSelectValue.current.value / e.currentTarget.value);
+            setValueLast(valueLast = changingValue.toFixed(2))
+        }
     }
 
     return (
       <section className={style.courseContainer}>
           <div>
-              <input placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
+              <input onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
               <select onChange={changeSelectFirst} ref={firstSelectValue}>
                   <option value={props.courseUSD}>USD</option>
                   <option value={props.courseEUR}>EUR</option>
@@ -44,7 +63,7 @@ const CourseList = (props)=> {
               </select>
           </div>
           <div>
-              <input placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
+              <input onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
               <select onChange={changeSelectLast} ref={lastSelectValue}>
                   <option value={1}>UAH</option>
                   <option value={props.courseUSD}>USD</option>
