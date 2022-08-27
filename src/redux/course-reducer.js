@@ -1,20 +1,21 @@
-import {currencyAPI} from "../api/api";
+import {currencyAPI} from '../api/api';
 
-const SET_COURSE_USD = 'SET_COURSE_USD';
-const SET_COURSE_EUR = 'SET_COURSE_EUR';
+const SET_COURSE = 'SET_COURSE';
 
 let initialState = {
     courseUSD: 39,
     courseEUR: 40,
-    courseUAH: 1,
+    course:
+    [
+        {r030: 840, txt: 'Долар США', rate: 39, cc: 'USD', exchangedate: '29.08.2022'},
+        {r030: 978, txt: 'Євро', rate: 40, cc: 'EUR', exchangedate: '29.08.2022'}
+    ]
 }
 
 const courseReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_COURSE_USD:
-            return {...state, offset: action.course}
-        case SET_COURSE_EUR:
-            return {...state, offset: action.course}
+        case SET_COURSE:
+            return {...state, course: action.course}
         default:
             return state;
     }
@@ -22,13 +23,13 @@ const courseReducer = (state = initialState, action) => {
 
 export default courseReducer;
 
-export const setCourseUSD = (course) => ({type: SET_COURSE_USD, course})
-export const setCourseEUR = (course) => ({type: SET_COURSE_EUR, course})
+export const setCourse = (course) => ({type: SET_COURSE, course})
 
-export const getCourseUSD= () => {
+export const getCourse= () => {
     return (dispatch) => {
         currencyAPI.getCurrencyAPI().then(data => {
-            dispatch(setCourseUSD(data))
+            dispatch(setCourse(data))
         })
     }
 }
+
