@@ -26,6 +26,23 @@ const CourseList = (props)=> {
 
     let firstSelectValue = React.createRef();
     let lastSelectValue = React.createRef();
+    let firstInputValue = React.createRef();
+    let lastInputValue = React.createRef();
+
+    let changeSide = () => {
+        let a = firstSelectValue.current.value;
+        let b = lastSelectValue.current.value;
+        firstSelectValue.current.value = b;
+        lastSelectValue.current.value = a;
+        if (editMode === false){
+            normLogic()
+            exchangeOperationLast(firstInputValue.current.value)
+        }
+        else if(editMode === true){
+            reverseLogic()
+            exchangeOperationFirst(lastInputValue.current.value)
+        }
+    }
 
     let normLogic = () => {
         return setEditMode(false);
@@ -36,14 +53,23 @@ const CourseList = (props)=> {
     }
 
     const changeInputFirst = (e) => {
-        let changingValue = e.currentTarget.value * (lastSelectValue.current.value / firstSelectValue.current.value);
-        setValueLast(valueLast = e.currentTarget.value)
+        let operationValue = e.currentTarget.value;
+        exchangeOperationFirst(operationValue)
+    }
+
+    let exchangeOperationFirst = (value) => {
+        let changingValue = value * (lastSelectValue.current.value / firstSelectValue.current.value);
+        setValueLast(valueLast = value)
         setValueFirst(valueFirst = changingValue.toFixed(2))
     }
 
     const changeInputLast = (e) => {
-        let changingValue = e.currentTarget.value * (firstSelectValue.current.value / lastSelectValue.current.value);
-        setValueFirst(valueFirst = e.currentTarget.value)
+        exchangeOperationLast(e.currentTarget.value)
+    }
+
+    let exchangeOperationLast = (obj) => {
+        let changingValue = obj * (firstSelectValue.current.value / lastSelectValue.current.value);
+        setValueFirst(valueFirst = obj)
         setValueLast(valueLast = changingValue.toFixed(2))
     }
 
@@ -78,16 +104,16 @@ const CourseList = (props)=> {
                   </div>
                   <div className={style.exchanger}>
                       <div className={style.exchanger__inputWrapper}>
-                          <input onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
+                          <input ref={firstInputValue} onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
                           <select onChange={changeSelectFirst} ref={firstSelectValue}>
                               <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
                               <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
                               <option value={1}>Гривня</option>
                           </select>
                       </div>
-                      <img className={style.exchanger__arrow} src={arrow} alt="arrow"/>
+                      <img onClick={changeSide} className={style.exchanger__arrow} src={arrow} alt="arrow"/>
                       <div className={style.exchanger__inputWrapper}>
-                          <input onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
+                          <input ref={lastInputValue} onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
                           <select onChange={changeSelectLast} ref={lastSelectValue}>
                               <option value={1}>Гривня</option>
                               <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
