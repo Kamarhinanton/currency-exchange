@@ -3,8 +3,6 @@ import {currencyAPI} from '../api/api';
 const SET_COURSE = 'SET_COURSE';
 
 let initialState = {
-    courseUSD: 39,
-    courseEUR: 40,
     course:
     [
         {r030: 840, txt: 'Долар США', rate: 39, cc: 'USD', exchangedate: '29.08.2022'},

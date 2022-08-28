@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import style from './courseList.module.scss';
 import {useState} from "react";
+import arrow from '../../img/arrows.svg'
 
 const CourseList = (props)=> {
     let [valueFirst, setValueFirst] = useState('');
@@ -69,24 +70,34 @@ const CourseList = (props)=> {
     }
 
     return (
-      <section className={style.courseContainer}>
-          <div>
-              <input onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
-              <select onChange={changeSelectFirst} ref={firstSelectValue}>
-                  <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
-                  <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
-                  <option value={1}>Гривня</option>
-              </select>
+      <header className={style.header}>
+          <div className={style.container}>
+              <div className={style.header__content}>
+                  <div className={style.header__content_logo}>
+                      <a href="#"><span>currency</span>Exchanger</a>
+                  </div>
+                  <div className={style.exchanger}>
+                      <div className={style.exchanger__inputWrapper}>
+                          <input onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
+                          <select onChange={changeSelectFirst} ref={firstSelectValue}>
+                              <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
+                              <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
+                              <option value={1}>Гривня</option>
+                          </select>
+                      </div>
+                      <img className={style.exchanger__arrow} src={arrow} alt="arrow"/>
+                      <div className={style.exchanger__inputWrapper}>
+                          <input onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
+                          <select onChange={changeSelectLast} ref={lastSelectValue}>
+                              <option value={1}>Гривня</option>
+                              <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
+                              <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
+                          </select>
+                      </div>
+                  </div>
+              </div>
           </div>
-          <div>
-              <input onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
-              <select onChange={changeSelectLast} ref={lastSelectValue}>
-                  <option value={1}>Гривня</option>
-                  <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
-                  <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
-              </select>
-          </div>
-      </section>
+      </header>
     )
 }
 
