@@ -8,26 +8,23 @@ const CourseList = (props)=> {
     let [valueLast, setValueLast] = useState('');
     let [editMode, setEditMode] = useState(false);
 
-    useEffect(() => {
-        props.getCourse()
-    }, []);
-
-    let newCourseUSD = () => {
-       let courses = props.course;
-       let found = courses.find(e => e.txt === 'Долар США');
-       return found
-    }
-
-    let newCourseEUR = () => {
-        let courses = props.course;
-        let found = courses.find(e => e.txt === 'Євро');
-        return found
-    }
-
     let firstSelectValue = React.createRef();
     let lastSelectValue = React.createRef();
     let firstInputValue = React.createRef();
     let lastInputValue = React.createRef();
+
+    let USD = 'Долар США'
+    let EUR = 'Євро'
+
+    useEffect(() => {
+        props.getCourse()
+    }, []);
+
+    let newCourse = (string) => {
+       let courses = props.course;
+       let found = courses.find(e => e.txt === `${string}`);
+       return found
+    }
 
     let changeSide = () => {
         let a = firstSelectValue.current.value;
@@ -35,42 +32,13 @@ const CourseList = (props)=> {
         firstSelectValue.current.value = b;
         lastSelectValue.current.value = a;
         if (editMode === false){
-            normLogic()
-            exchangeOperationLast(firstInputValue.current.value)
+            setEditMode(false)
+            changeInputLast(firstInputValue.current.value)
         }
         else if(editMode === true){
-            reverseLogic()
-            exchangeOperationFirst(lastInputValue.current.value)
+            setEditMode(true)
+            changeInputFirst(lastInputValue.current.value)
         }
-    }
-
-    let normLogic = () => {
-        return setEditMode(false);
-    }
-
-    let reverseLogic = () => {
-       return setEditMode(true);
-    }
-
-    const changeInputFirst = (e) => {
-        let operationValue = e.currentTarget.value;
-        exchangeOperationFirst(operationValue)
-    }
-
-    let exchangeOperationFirst = (value) => {
-        let changingValue = value * (lastSelectValue.current.value / firstSelectValue.current.value);
-        setValueLast(valueLast = value)
-        setValueFirst(valueFirst = changingValue.toFixed(2))
-    }
-
-    const changeInputLast = (e) => {
-        exchangeOperationLast(e.currentTarget.value)
-    }
-
-    let exchangeOperationLast = (obj) => {
-        let changingValue = obj * (firstSelectValue.current.value / lastSelectValue.current.value);
-        setValueFirst(valueFirst = obj)
-        setValueLast(valueLast = changingValue.toFixed(2))
     }
 
     const changeSelectFirst = (e) => {
@@ -95,6 +63,18 @@ const CourseList = (props)=> {
         }
     }
 
+    const changeInputFirst = (value) => {
+        let changingValue = value * (lastSelectValue.current.value / firstSelectValue.current.value);
+        setValueLast(valueLast = value)
+        setValueFirst(valueFirst = changingValue.toFixed(2))
+    }
+
+    const changeInputLast = (value) => {
+        let changingValue = value * (firstSelectValue.current.value / lastSelectValue.current.value);
+        setValueFirst(valueFirst = value)
+        setValueLast(valueLast = changingValue.toFixed(2))
+    }
+
     return (
       <header className={style.header}>
           <div className={style.container}>
@@ -104,20 +84,20 @@ const CourseList = (props)=> {
                   </div>
                   <div className={style.exchanger}>
                       <div className={style.exchanger__inputWrapper}>
-                          <input ref={firstInputValue} onFocus={normLogic} placeholder='0' onChange={changeInputLast} value={valueFirst}  type="number"/>
+                          <input ref={firstInputValue} onFocus={() => {setEditMode(false)}} placeholder='0' onChange={(e) => {changeInputLast(e.currentTarget.value)}} value={valueFirst}  type="number"/>
                           <select onChange={changeSelectFirst} ref={firstSelectValue}>
-                              <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
-                              <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
+                              <option value={newCourse(USD).rate}>{newCourse(USD).txt}</option>
+                              <option value={newCourse(EUR).rate}>{newCourse(EUR).txt}</option>
                               <option value={1}>Гривня</option>
                           </select>
                       </div>
                       <img onClick={changeSide} className={style.exchanger__arrow} src={arrow} alt="arrow"/>
                       <div className={style.exchanger__inputWrapper}>
-                          <input ref={lastInputValue} onFocus={reverseLogic} placeholder='0' onChange={changeInputFirst} type="number" value={valueLast}/>
+                          <input ref={lastInputValue} onFocus={() => {setEditMode(true)}} placeholder='0' onChange={(e) => {changeInputFirst(e.currentTarget.value)}} value={valueLast} type="number" />
                           <select onChange={changeSelectLast} ref={lastSelectValue}>
                               <option value={1}>Гривня</option>
-                              <option value={newCourseUSD().rate}>{newCourseUSD().txt}</option>
-                              <option value={newCourseEUR().rate}>{newCourseEUR().txt}</option>
+                              <option value={newCourse(USD).rate}>{newCourse(USD).txt}</option>
+                              <option value={newCourse(EUR).rate}>{newCourse(EUR).txt}</option>
                           </select>
                       </div>
                   </div>

@@ -38,6 +38,13 @@
           width: 100px;
           box-sizing: content-box;
           padding: 0 20px 0 0;
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+        }
+        input[type=number] {
+          -moz-appearance: textfield;
         }
         select{
           background: transparent;
