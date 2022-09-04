@@ -27,10 +27,12 @@ const CourseList = (props)=> {
     }
 
     let changeSide = () => {
-        let a = firstSelectValue.current.value;
-        let b = lastSelectValue.current.value;
-        firstSelectValue.current.value = b;
-        lastSelectValue.current.value = a;
+        // let a = firstSelectValue.current.value;
+        // let b = lastSelectValue.current.value;
+        // firstSelectValue.current.value = b;
+        // lastSelectValue.current.value = a;
+        [lastSelectValue.current.value, firstSelectValue.current.value] = [firstSelectValue.current.value, lastSelectValue.current.value];
+
         if (editMode === false){
             setEditMode(false)
             changeInputLast(firstInputValue.current.value)
